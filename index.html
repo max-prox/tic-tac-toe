@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: radial-gradient(circle, #0f0f0f, #1a1a1a);
+            color: #00ffcc;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 0 0 15px #00ffcc;
+        }
+
+        .button {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            background: #ff0099;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 0 0 15px rgba(255, 0, 153, 0.8);
+            box-shadow: 0 0 15px rgba(255, 0, 153, 0.6);
+            transition: 0.3s;
+            margin: 10px;
+        }
+
+        .button:hover {
+            background: #ff66b2;
+            box-shadow: 0 0 20px rgba(255, 0, 153, 0.8);
+        }
+
+        .room-options {
+            display: none;
+        }
+
+        .room-options.active {
+            display: block;
+        }
+
+        .input-field {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 2px solid #00ffcc;
+            background: rgba(0, 0, 0, 0.5);
+            color: #00ffcc;
+            margin: 10px;
+        }
+
+        .copy-button {
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            background: #00ffcc;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
+            transition: 0.3s;
+        }
+
+        .copy-button:hover {
+            background: #66ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.8);
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 5px;
+            position: relative;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(0, 255, 204, 0.2);
+            border: 2px solid rgba(0, 255, 204, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.8);
+        }
+
+        .cell:hover {
+            background-color: rgba(0, 255, 204, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.7);
+        }
+
+        .cell.X {
+            color: #ff0099;
+            text-shadow: 0 0 15px rgba(255, 0, 153, 0.8);
+        }
+
+        .cell.O {
+            color: #00ff00;
+            text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+        }
+
+        #reset {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            background: #ff0099;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-shadow: 0 0 15px rgba(255, 0, 153, 0.8);
+            box-shadow: 0 0 15px rgba(255, 0, 153, 0.6);
+            transition: 0.3s;
+        }
+
+        #reset:hover {
+            background: #ff66b2;
+            box-shadow: 0 0 20px rgba(255, 0, 153, 0.8);
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ffeb3b;
+            text-shadow: 0 0 10px #ffeb3b;
+        }
+
+        .win-line {
+            position: absolute;
+            background: #ffeb3b;
+            height: 5px;
+            border-radius: 5px;
+            transform-origin: 0 0;
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(255, 235, 59, 0.8);
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="start-page">
+        <h1>Tic Tac Toe</h1>
+        <button class="button" id="play-button">Play</button>
+        <button class="button" id="room-button">Room</button>
+    </div>
+
+    <div class="container room-options" id="room-options">
+        <h1>Room Options</h1>
+        <button class="button" id="join-room-button">Join Room</button>
+        <button class="button" id="create-room-button">Create Room</button>
+    </div>
+
+    <div class="container room-options" id="create-room-section">
+        <h1>Create Room</h1>
+        <p>Your Room Code: <span id="room-code"></span></p>
+        <button class="copy-button" id="copy-button">Copy Code</button>
+    </div>
+
+    <div class="container room-options" id="join-room-section">
+        <h1>Join Room</h1>
+        <input type="text" class="input-field" id="room-code-input" placeholder="Enter Room Code">
+        <button class="button" id="join-button">Join</button>
+    </div>
+
+    <div class="container" id="game-section" style="display: none;">
+        <h1>Tic Tac Toe</h1>
+        <div id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <button id="reset">Reset Game</button>
+        <p id="status"></p>
+    </div>
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io('https://36f7-ea8c50046b22f7b25bbfea9235.v4.citest.dev'); // Replace with your backend URL if hosted
+
+        const startPage = document.getElementById('start-page');
+        const roomOptions = document.getElementById('room-options');
+        const createRoomSection = document.getElementById('create-room-section');
+        const joinRoomSection = document.getElementById('join-room-section');
+        const gameSection = document.getElementById('game-section');
+
+        const playButton = document.getElementById('play-button');
+        const roomButton = document.getElementById('room-button');
+        const joinRoomButton = document.getElementById('join-room-button');
+        const createRoomButton = document.getElementById('create-room-button');
+        const copyButton = document.getElementById('copy-button');
+        const joinButton = document.getElementById('join-button');
+        const roomCodeInput = document.getElementById('room-code-input');
+        const roomCodeDisplay = document.getElementById('room-code');
+
+        const board = document.getElementById('board');
+        const cells = document.querySelectorAll('.cell');
+        const statusText = document.getElementById('status');
+        const resetButton = document.getElementById('reset');
+
+        let currentPlayer = '';
+        let roomCode = '';
+        let gameActive = true;
+
+        playButton.addEventListener('click', () => {
+            startPage.style.display = 'none';
+            gameSection.style.display = 'block';
+        });
+
+        roomButton.addEventListener('click', () => {
+            startPage.style.display = 'none';
+            roomOptions.classList.add('active');
+        });
+
+        joinRoomButton.addEventListener('click', () => {
+            roomOptions.classList.remove('active');
+            joinRoomSection.classList.add('active');
+        });
+
+        createRoomButton.addEventListener('click', () => {
+            roomOptions.classList.remove('active');
+            createRoomSection.classList.add('active');
+            socket.emit('createRoom');
+        });
+
+        socket.on('roomCreated', (code) => {
+            roomCode = code;
+            roomCodeDisplay.textContent = code;
+        });
+
+        copyButton.addEventListener('click', () => {
+            navigator.clipboard.writeText(roomCode).then(() => {
+                alert('Room code copied to clipboard!');
+            });
+        });
+
+        joinButton.addEventListener('click', () => {
+            const code = roomCodeInput.value;
+            if (code.length === 6) {
+                socket.emit('joinRoom', code);
+            } else {
+                alert('Please enter a valid 6-digit room code.');
+            }
+        });
+
+        socket.on('roomJoined', (code) => {
+            roomCode = code;
+            joinRoomSection.classList.remove('active');
+            gameSection.style.display = 'block';
+        });
+
+        socket.on('playerJoined', (playerCount) => {
+            if (playerCount === 2) {
+                alert('Game is starting!');
+            }
+        });
+
+        socket.on('gameStarted', (startingPlayer) => {
+            currentPlayer = startingPlayer;
+            statusText.textContent = `It's ${currentPlayer}'s turn`;
+        });
+
+        socket.on('moveMade', (gameState, nextPlayer) => {
+            updateBoard(gameState);
+            currentPlayer = nextPlayer;
+            statusText.textContent = `It's ${currentPlayer}'s turn`;
+        });
+
+        socket.on('gameOver', (result) => {
+            if (result === 'draw') {
+                statusText.textContent = 'Draw!';
+            } else {
+                statusText.textContent = `Player ${result} wins!`;
+            }
+            gameActive = false;
+        });
+
+        socket.on('roomFull', () => {
+            alert('Room is full. Please try another room.');
+        });
+
+        socket.on('roomNotFound', () => {
+            alert('Room not found. Please check the room code.');
+        });
+
+        socket.on('playerLeft', () => {
+            alert('The other player has left the game.');
+            resetGame();
+        });
+
+        function handleCellClick(event) {
+            const clickedCell = event.target;
+            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+            if (!gameActive || currentPlayer !== 'X') {
+                return;
+            }
+
+            socket.emit('makeMove', roomCode, clickedCellIndex, currentPlayer);
+        }
+
+        function updateBoard(gameState) {
+            cells.forEach((cell, index) => {
+                cell.textContent = gameState[index];
+                cell.classList.remove('X', 'O');
+                if (gameState[index] === 'X' || gameState[index] === 'O') {
+                    cell.classList.add(gameState[index]);
+                }
+            });
+        }
+
+        function resetGame() {
+            gameActive = true;
+            currentPlayer = 'X';
+            statusText.textContent = `It's ${currentPlayer}'s turn`;
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('X', 'O');
+            });
+        }
+
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        resetButton.addEventListener('click', resetGame);
+    </script>
+</body>
+</html>
