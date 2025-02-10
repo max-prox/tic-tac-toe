@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Room</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .popup-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Game</h1>
+        <button id="playButton">Play</button>
+        <button id="roomsButton">Rooms</button>
+    </div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close" id="closePopup">&times;</span>
+            <h2>Room Options</h2>
+            <button id="createRoomButton">Create Room</button>
+            <button id="joinRoomButton">Join Room</button>
+            <div id="joinRoomSection" style="display:none;">
+                <input type="text" id="roomCode" placeholder="Enter Room Code">
+                <button id="joinButton">Join</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('roomsButton').onclick = function() {
+            document.getElementById('popup').style.display = 'block';
+        };
+
+        document.getElementById('closePopup').onclick = function() {
+            document.getElementById('popup').style.display = 'none';
+        };
+
+        document.getElementById('createRoomButton').onclick = function() {
+            const roomCode = generateRoomCode();
+            alert(`Room created! Share this code: ${roomCode}`);
+            // Here you would typically store the room code in a database or server
+        };
+
+        document.getElementById('joinRoomButton').onclick = function() {
+            document.getElementById('joinRoomSection').style.display = 'block';
+        };
+
+        document.getElementById('joinButton').onclick = function() {
+            const roomCode = document.getElementById('roomCode').value;
+            if (roomCode) {
+                alert(`Joining room with code: ${roomCode}`);
+                // Here you would typically check the room code against a database or server
+            } else {
+                alert('Please enter a room code.');
+            }
+        };
+
+        function generateRoomCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // Close the popup if the user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('popup')) {
+                document.getElementById('popup').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>
